@@ -24,7 +24,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    "master"
+    "470b1553768981f3a86b9a79bf0f9016bebe74ce"
     QUIET
     )
 
