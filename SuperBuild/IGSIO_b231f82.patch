@@ -1,0 +1,82 @@
+From b231f82d9dbd622afd2e0cff8bc4384fd5d16bbb Mon Sep 17 00:00:00 2001
+From: James Butler <james.butler@revvity.com>
+Date: Thu, 16 Apr 2026 18:03:59 -0400
+Subject: [PATCH] COMP: Fix CMake defined variable checks using invalid syntax
+
+DEFINED is not a function. See https://cmake.org/cmake/help/latest/command/if.html#defined
+---
+ SuperBuild/External_VP9.cmake      | 4 ++--
+ SuperBuild/External_YASM.cmake     | 4 ++--
+ SuperBuild/External_libwebm.cmake  | 4 ++--
+ SuperBuild/External_vtkAddon.cmake | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/SuperBuild/External_VP9.cmake b/SuperBuild/External_VP9.cmake
+index e1ce54e..e1be988 100644
+--- a/SuperBuild/External_VP9.cmake
++++ b/SuperBuild/External_VP9.cmake
+@@ -19,10 +19,10 @@ else()
+     set (VP9_INCLUDE_DIR "${CMAKE_BINARY_DIR}/VP9/vpx" CACHE PATH "VP9 source directory" FORCE)
+     set (VP9_LIBRARY_DIR "${CMAKE_BINARY_DIR}/VP9" CACHE PATH "VP9 library directory" FORCE)
+ 
+-    if(NOT DEFINED(VP9_GIT_REPOSITORY))
++    if(NOT DEFINED VP9_GIT_REPOSITORY)
+       set(VP9_GIT_REPOSITORY "https://github.com/webmproject/libvpx/" CACHE STRING "Set VP9 desired git url")
+     endif()
+-    if(NOT DEFINED(VP9_GIT_REVISION))
++    if(NOT DEFINED VP9_GIT_REVISION)
+       set(VP9_GIT_REVISION "v1.12.0" CACHE STRING "Set VP9 desired git hash (master means latest)")
+     endif()
+ 
+diff --git a/SuperBuild/External_YASM.cmake b/SuperBuild/External_YASM.cmake
+index cef9b92..abf2ba6 100644
+--- a/SuperBuild/External_YASM.cmake
++++ b/SuperBuild/External_YASM.cmake
+@@ -13,11 +13,11 @@ else()
+     set(YASM_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
+   endif()
+ 
+-  if(NOT DEFINED(YASM_GIT_REPOSITORY))
++  if(NOT DEFINED YASM_GIT_REPOSITORY)
+     set(YASM_GIT_REPOSITORY "https://github.com/yasm/yasm.git" CACHE STRING "Set YASM desired git url")
+   endif()
+ 
+-  if(NOT DEFINED(YASM_GIT_REVISION))
++  if(NOT DEFINED YASM_GIT_REVISION)
+     set(YASM_GIT_REVISION "master" CACHE STRING "Set YASM desired git hash (master means latest)")
+   endif()
+ 
+diff --git a/SuperBuild/External_libwebm.cmake b/SuperBuild/External_libwebm.cmake
+index c218728..5fe137f 100644
+--- a/SuperBuild/External_libwebm.cmake
++++ b/SuperBuild/External_libwebm.cmake
+@@ -31,10 +31,10 @@ else()
+       )
+   endif()
+ 
+-  if(NOT DEFINED(libwebm_GIT_REPOSITORY))
++  if(NOT DEFINED libwebm_GIT_REPOSITORY)
+     set(libwebm_GIT_REPOSITORY "https://github.com/Sunderlandkyl/libwebm.git" CACHE STRING "Set libwebm desired git url")
+   endif()
+-  if(NOT DEFINED(libwebm_GIT_REVISION))
++  if(NOT DEFINED libwebm_GIT_REVISION)
+     set(libwebm_GIT_REVISION "f0072f4a22bb259c99b39d1870af2c0c511207ca" CACHE STRING "Set libwebm desired git hash") # Sunderlandkyl/libwebm_d1b981b79
+   endif()
+ 
+diff --git a/SuperBuild/External_vtkAddon.cmake b/SuperBuild/External_vtkAddon.cmake
+index 9700b8b..732fff5 100644
+--- a/SuperBuild/External_vtkAddon.cmake
++++ b/SuperBuild/External_vtkAddon.cmake
+@@ -30,10 +30,10 @@ else()
+       )
+   endif()
+ 
+-  if(NOT DEFINED(vtkAddon_GIT_REPOSITORY))
++  if(NOT DEFINED vtkAddon_GIT_REPOSITORY)
+     set(vtkAddon_GIT_REPOSITORY "https://github.com/Slicer/vtkAddon.git" CACHE STRING "Set vtkAddon desired git url")
+   endif()
+-  if(NOT DEFINED(vtkAddon_GIT_REVISION))
++  if(NOT DEFINED vtkAddon_GIT_REVISION)
+     set(vtkAddon_GIT_REVISION "main" CACHE STRING "Set vtkAddon desired git hash (main means latest)")
+   endif()
+ 

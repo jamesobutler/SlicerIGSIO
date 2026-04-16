@@ -24,21 +24,12 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    "master"
+    "af00824506c7c099a37daa180a7af191d0d274a1"
     QUIET
     )
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
   set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-
-  set(IGSIO_USE_3DSlicer ON)
-  if (DEFINED Slicer_EXTENSION_SOURCE_DIRS) # Custom build
-    set(IGSIO_USE_3DSlicer OFF)
-    list(APPEND ${proj}_DEPENDS
-      VTK
-      ITK
-      )
-  endif()
 
   set(BUILD_OPTIONS
     -DVTK_DIR:PATH=${VTK_DIR}
@@ -49,14 +40,33 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     -DZLIB_ROOT:PATH=${ZLIB_ROOT}
 
     -DIGSIO_SUPERBUILD:BOOL=ON
-    -DIGSIO_USE_3DSlicer:BOOL=${IGSIO_USE_3DSlicer}
     -DIGSIO_BUILD_VOLUMERECONSTRUCTION:BOOL=ON
     -DIGSIO_BUILD_SEQUENCEIO:BOOL=ON
     -DIGSIO_SEQUENCEIO_ENABLE_MKV:BOOL=ON
     -DIGSIO_USE_VP9:BOOL=${SlicerIGSIO_USE_VP9}
 
-    -DSlicer_DIR:PATH=${Slicer_DIR}
     -DBUILD_TESTING:BOOL=OFF
+    )
+
+  if(DEFINED Slicer_EXTENSION_SOURCE_DIRS) # Custom build
+    set(IGSIO_USE_3DSlicer OFF)
+    list(APPEND ${proj}_DEPENDS
+      VTK
+      ITK
+      )
+    ExternalProject_SetIfNotDefined(
+      vtkAddon_GIT_REVISION
+      "2ed3e2226cf25958b4dbf8bf917b2f7793ecd6a2" # harden vtkAddon to override IGSIO which specifies vtkAddon's main branch
+      QUIET
+      )
+    list(APPEND BUILD_OPTIONS
+      -DvtkAddon_GIT_REVISION:STRING=${vtkAddon_GIT_REVISION}
+    )
+  else()
+    set(IGSIO_USE_3DSlicer ON)
+  endif()
+  list(APPEND BUILD_OPTIONS
+    -DIGSIO_USE_3DSlicer:BOOL=${IGSIO_USE_3DSlicer}
     )
 
   if (IGSIO_USE_3DSlicer)
@@ -105,6 +115,7 @@ endif()
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
+    PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=fix "${CMAKE_CURRENT_LIST_DIR}/IGSIO_b231f82.patch"
     CMAKE_CACHE_ARGS
       # Compiler settings
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
